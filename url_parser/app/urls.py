@@ -18,4 +18,5 @@ import views
 
 urlpatterns = [
     url(r'^all/', views.Home.as_view(), name='all'),
+     url(r'^details/', views.GetDetails.as_view(), name='details')
 ]
