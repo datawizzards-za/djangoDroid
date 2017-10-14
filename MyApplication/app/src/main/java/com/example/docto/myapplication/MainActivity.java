@@ -7,7 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.BufferedInputStream;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,9 +17,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 private TextView textView;
+    private ArrayList<String> stringObjects =  new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +33,7 @@ private TextView textView;
         btnHit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new JSONTask().execute("http://192.168.43.13:8000/app/all/");
+                new JSONTask().execute("http://192.168.43.13:8000/app/details/");
             }});
     }
     public class JSONTask extends AsyncTask<String,String,String> {
@@ -47,22 +52,36 @@ private TextView textView;
                 StringBuffer buffer = new StringBuffer();
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    System.out.println("===========================");
-                    System.out.println("Am inside while loop");
-                    System.out.println("===========================");
                     buffer.append(line);
                 }
-                System.out.println("===========================");
-                System.out.println("Your Buffer is :"+buffer.toString());
+                String jsonObject = buffer.toString();
+                String finalObject = "{"+'"' + "users"+ '"' + ": " +jsonObject+"}";
+                System.out.println("=============================");
+                System.out.println(finalObject);
+
+                JSONObject jsonParent = new JSONObject(finalObject);
+                JSONArray jsonArray = jsonParent.getJSONArray("users");
+
+                for(int i = 0; i<jsonArray.length();i++){
+                    JSONObject object = jsonArray.getJSONObject(i);
+                    String name = object.getString("name");
+                    String surname = object.getString("lastname");
+                    String address = object.getString("address");
+
+                    line = "name: "+name+" surname :"+surname +" address: "+address;
+//                    String lineAppend = line;
+                    System.out.println("=============================");
+                    System.out.println(line);
+                    System.out.println("=============================");
+                    stringObjects.add(line);
+                }
                 return buffer.toString();
             } catch (MalformedURLException e) {
-                System.out.println("===========================");
-                System.out.println("MalformedURLException has occurred");
-                System.out.println("===========================");
+                e.printStackTrace();
             } catch (IOException e) {
-                System.out.println("===========================");
-                System.out.println("IOException has occurred");
-                System.out.println("===========================");
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
             } finally {
                 if (connection != null)
                     connection.disconnect();
@@ -70,9 +89,7 @@ private TextView textView;
                     if (reader != null)
                         reader.close();
                 } catch (IOException e) {
-                    System.out.println("===========================");
-                    System.out.println("Could not close the buffer");
-                    System.out.println("===========================");
+                    e.printStackTrace();
                 }
             }
             return null;
@@ -81,9 +98,12 @@ private TextView textView;
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            System.out.println("===========================");
-            System.out.println(result);
-            textView.setText(result);
+//            for(String s:stringObjects){
+//                System.out.println("=============================");
+//                System.out.println(s);
+//                System.out.println("=============================");
+//            }
+//            textView.setText(result);
         }
     }
 }
