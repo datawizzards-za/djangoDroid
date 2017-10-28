@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.views import View
 from app import models
+from json import dumps
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import generics
@@ -27,17 +28,19 @@ class Home(View):
         results = {}
         results['users'] = data
         return Response(data)
+    
 
-    def post(self, request, *args, **kwargs):
-        response_data = {}
-        name = kwargs['name']
-        lastname = kwargs['lastname']
-        address = kwargs['address']
-        models.Details.objects.create(name=name, 
+class PostData(View):
+
+	def get(self, request, *args, **kwargs):
+		response_data = {}
+		name = kwargs['name']
+		lastname = kwargs['lastname']
+		address = kwargs['address']
+		models.Details.objects.create(name=name, 
                 lastname=lastname,
                 address=address)
-        response_data['message'] = 'Created successfully'
-        return HttpResponse(dumps(response_data), 
+		response_data['message'] = 'Created successfully'
+		return HttpResponse(dumps(response_data), 
                 content_type='application/json')
-    
-    
+				
