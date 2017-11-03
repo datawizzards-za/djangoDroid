@@ -58,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
                 URL url = new URL(params[0]);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
-
+                System.out.println("_____________&&&&&&&&_____________________");
+                System.out.println(connection.getHeaderField(4));
+                System.out.println(connection.getPermission().getActions());
+                System.out.println("_____________&&&&&&&_______________________");
                 InputStream stream = connection.getInputStream();
                 reader = new BufferedReader(new InputStreamReader(stream));
                 StringBuffer buffer = new StringBuffer();

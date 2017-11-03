@@ -19,5 +19,5 @@ from . import views
 urlpatterns = [
     url(r'^all/', views.Home.as_view(), name='all'),
     url(r'^details/', views.GetDetails.as_view(), name='details'),
-    url(r'^postdata/(?P<name>\w+)/(?P<lastname>\w+)/(?P<address>\w+)/', views.PostData.as_view(), name='postdata'),
+    url(r'^postdata/$', views.ListCreateDetails.as_view(), name='postdata'),
 ]
